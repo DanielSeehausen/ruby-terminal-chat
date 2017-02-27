@@ -1,5 +1,5 @@
 # A websocket server and client that enables chat-room functionality in the terminal
-   * extremely lightweight terminal chatroom
+   * lightweight terminal chatroom
    * users join the server directly via running the websocket client.rb file from terminal
 
 ## Client
@@ -8,7 +8,7 @@
    * connects to the server and handles outgoing/incoming messages via default $stdin and $stdout (STDIN, STDOUT)
    * script is minimal and currently supports options to show/hide input via activating noecho
    * next steps would be to either access terminal's input field from the script or use a modified gui. Ideally, we want users to be able to build strings in the terminal without the display interfering
-   * To use, only the ip:port needs to be altered!
+   * To use, the ip:port needs to be altered
 
 
 ## Server
