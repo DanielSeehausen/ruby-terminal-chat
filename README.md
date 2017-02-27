@@ -1,5 +1,5 @@
 # A websocket server and client that enables chat-room functionality in the terminal
-   * extremely lightweight terminal chatroom
+   * lightweight terminal chatroom
    * users join the server directly via running the websocket client.rb file from terminal
 
 ## Client
