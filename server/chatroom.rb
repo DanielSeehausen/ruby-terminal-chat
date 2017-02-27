@@ -23,8 +23,9 @@ class ChatRoom
   end
 
   def initiate_welcome_sequence(new_member)
-    new_member.send("You're input will not display as you are typing. To alter this, see the comments in the loop of the client.rb file.")
-    new_member.send("Validating...")
+    new_member.send("Your input will not display as you are typing. To alter this, see the comments in the loop of the client.rb file.")
+    new_member.send("\n*******ENTER '/' FOR A LIST OF COMMANDS*******")
+    new_member.send("\nValidating...")
     new_member.auth_test = @tests.sample
     new_member.send(new_member.auth_test[:prompt])
     new_member

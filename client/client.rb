@@ -25,12 +25,32 @@ ws.on :error do |e|
   exit -1
 end
 
+CLIENT_COMMANDS = [
+  "/exit --> exit",
+  "/show --> show's text as you input (received messages will visually break your terminal input, but will not change what you have already typed in)",
+  "/hide --> the default hide input option for text"
+]
+
+hidden = true
+
 loop do
   # to hide terminal input use nacho. otherwise just use msg = gets. Do not use both
-  ws.send STDIN.noecho(&:gets)
-  # msg = gets
+  msg = hidden ? STDIN.noecho(&:gets).chomp : gets.chomp
 
-  #don't disable this you naughty naughty its checking on the server side as well
-  # ws.send msg if msg.to_s != "\n"
+  case msg.split.first
+  when '/'
+    CLIENT_COMMANDS.each {|command| puts command}
+  when '/hide'
+    hidden = true
+  when '/show'
+    hidden = false
+  when ""
+    puts "newline only"
+    break
+  when "/exit"
+    ws.close
+  else
+    ws.send msg
+  end
 
 end
