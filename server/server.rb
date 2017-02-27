@@ -2,8 +2,6 @@ require 'em-websocket'
 require 'set'
 require_relative "chatroom.rb"
 
-#ws.close(code = nil, body = nil)
-
 EM.run {
   @port = 8080
   puts "#{Time.now}: Server starting on #{@port}"

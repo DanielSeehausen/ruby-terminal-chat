@@ -1,5 +1,5 @@
 require 'websocket-client-simple'
-require 'io/console'
+require 'io/console' #needed for noecho
 
 url = ARGV.shift || 'ws://192.168.5.68:8080'
 ws = WebSocket::Client::Simple.connect url
@@ -13,24 +13,23 @@ ws.on :open do
 end
 
 ws.on :close do |e|
-  puts "*** CLOSING ***"
-  p e
+  puts "*** CLOSED ***"
   exit 1
 end
 
 ws.on :error do |e|
   #TODO add attempt reconnect if error is server disconnected
-  p e
-  puts "Something went wrong (perhaps the server is no longer running?). Exiting..."
+  puts "Something went wrong: #{e}\nPerhaps the server is no longer running?. Exiting..."
   exit -1
 end
 
 CLIENT_COMMANDS = [
-  "/exit --> exit",
-  "/show --> show's text as you input (received messages will visually break your terminal input, but will not change what you have already typed in)",
-  "/hide --> the default hide input option for text"
+  "",
+  "* /exit *> exit",
+  "* /show *> shows text as you input (received messages will visually break your terminal input, but will not change what you have already typed in)",
+  "* /hide *> the default hide input option for text",
+  ""
 ]
-
 hidden = true
 
 loop do
@@ -41,14 +40,15 @@ loop do
   when '/'
     CLIENT_COMMANDS.each {|command| puts command}
   when '/hide'
+    puts " * INPUT HIDDEN = TRUE * "
     hidden = true
   when '/show'
+    puts " * INPUT HIDDEN = FALSE * "
     hidden = false
-  when ""
-    puts "newline only"
-    break
+  when "", "\n", nil
   when "/exit"
-    ws.close
+    puts "*** CLOSED BY CLIENT ***"
+    exit 1
   else
     ws.send msg
   end

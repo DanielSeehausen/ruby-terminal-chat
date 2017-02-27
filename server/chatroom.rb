@@ -7,9 +7,16 @@ class ChatRoom
   extend Usernames
   extend AuthenticationTests
 
+  WELCOME_STRING = "
+                    --------------------------------------------------
+                   |  ****** ENTER '/' FOR A LIST OF COMMANDS ******  |
+                   |           Current Input Setting: Hidden          |
+                   |  Pass validation before receiving chat privilege |
+                    --------------------------------------------------".freeze
+
   def initialize
     @members = {}
-    @rem_names = Usernames::ALL_NAMES
+    @rem_names = Usernames::ALL_NAMES.dup
     @tests = AuthenticationTests::TESTS
   end
 
@@ -18,16 +25,14 @@ class ChatRoom
   end
 
   def fetch_name
-    @rem_names = Usernames::ALL_NAMES if @rem_names.empty?
+    @rem_names = Usernames::ALL_NAMES.dup if @rem_names.empty?
     name = @rem_names.delete @rem_names.sample
   end
 
   def initiate_welcome_sequence(new_member)
-    new_member.send("Your input will not display as you are typing. To alter this, see the comments in the loop of the client.rb file.")
-    new_member.send("\n*******ENTER '/' FOR A LIST OF COMMANDS*******")
-    new_member.send("\nValidating...")
+    new_member.send(WELCOME_STRING.dup)
     new_member.auth_test = @tests.sample
-    new_member.send(new_member.auth_test[:prompt])
+    new_member.send("\n #{new_member.auth_test[:prompt]}")
     new_member
   end
 
@@ -41,7 +46,9 @@ class ChatRoom
   def send_msg(ws, msg)
     #TODO split up, should have a router and functions for each
     #TODO should I put back in the 'unknown' status to start? currently there is no use
+
     sender = @members[ws]
+
     case sender.standing
     when "good"
       complete_msg = "[#{sender.name}] - #{msg}"
@@ -56,11 +63,12 @@ class ChatRoom
       if sender.auth_test[:answers].include?(msg.downcase)
         #TODO this should validate them if the answer is correct and tell them what their name is
         sender.standing = "good"
-        sender.send("Correct - your text will now be printed to the chat")
+        sender.send("Your text will now be printed to the chat. Your username is: #{sender.name}")
       else
         sender.send("Try again")
       end
     end
+
   end
 
   def remove_member(ws)
